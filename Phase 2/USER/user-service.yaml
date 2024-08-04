@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: manas-user-service
+spec:
+  selector:
+    app: manas-user-service
+  type: LoadBalancer # Expose externally (optional)
+  ports:
+    - port: 8080 # External port (optional)
+      targetPort: 8080 # Book service port

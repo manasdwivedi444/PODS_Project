@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: manas-booking-service
+spec:
+  replicas: 3 # Define the desired number of replicas
+  selector:
+    matchLabels:
+      app: manas-booking-service
+  template:
+    metadata:
+      labels:
+        app: manas-booking-service
+    spec:
+      containers:
+        - name: manas-booking-service
+          image: manas-booking-service:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+          env: # Add environment variables for database connection
+            - name: SPRING_APPLICATION_JSON
+              value: '{ "spring.profiles.active": "production", "spring.datasource.url": "jdbc:h2:tcp://manas-h2db-service:9082/~/test;AUTO_SERVER=true;DEFAULT_LOCK_TIMEOUT=10000", "spring.datasource.driverClassName": "org.h2.Driver", "spring.datasource.username": "sa", "spring.datasource.password": "", "spring.jpa.show-sql": "true", "spring.jpa.hibernate.ddl-auto": "update", "spring.jpa.properties.hibernate.dialect": "org.hibernate.dialect.H2Dialect", "server.port": "8080" }'
+          resources:
+            requests:
+              cpu: 500m # Resource requests for the pod
+              memory: 2Gi
+            limits:
+              cpu: 2000m # Resource limits for the pod
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler
